@@ -47,9 +47,12 @@ const loginUser = async (req, res) => {
 
 const signupUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        if (!name || name.length < 3) {
-            return errorResponseMessage(res, "Name field is required");
+        const { firstName, lastName, email, password } = req.body;
+        if (!firstName || firstName.length < 3) {
+            return errorResponseMessage(res, "First Name must be at least 3 characters long");
+        }
+        if (!lastName || lastName.length < 3) {
+            return errorResponseMessage(res, "Last Name must be at least 3 characters long");
         }
         if (validator.isEmpty(email)) {
             return errorResponseMessage(res, "Email field is required");
@@ -66,7 +69,7 @@ const signupUser = async (req, res) => {
             return errorResponseMessage(res, "User email already exists");
         }
         const pass = await hashedPassword(password);
-        const profile = await createProfile({ name });
+        const profile = await createProfile({ firstName, lastName });
         const accountNumber = await generateAccountNumber();
         const userInfo = {
             // userType:"Admin",
@@ -106,7 +109,7 @@ const adminLogin = async (req, res) => {
         if (!checkPassword) {
             return errorResponseMessage(res, "Incorrect Password", 401);
         }
-        const mailSend = await sendMail(res); 
+        const mailSend = await sendMail(res);
         const token = jwt.sign(
             {
                 email: checkUserExists.email,

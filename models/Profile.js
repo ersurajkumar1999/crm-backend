@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const profileSchema = new mongoose.Schema({
-    name: {
+    firstName: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    lastName: {
         type: String,
         trim: true,
         default: null

@@ -31,9 +31,6 @@ const getAllUsers = async (req, res) => {
     }
 }
 const getUserById = async (req, res) => {
-
-}
-const findUser = async (req, res) => {
     try {
         if (!req.params.id) {
             return errorResponseMessage(res, "Id is required!", 401);
@@ -77,5 +74,4 @@ module.exports = {
     getUserById,
     deleteUser,
     updateUser,
-    findUser
 };
