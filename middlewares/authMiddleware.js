@@ -17,6 +17,7 @@ const auth = async (req, res, next) => {
             req.user = decode
             next();
         } catch (error) {
+            console.log("error===>", error);
             return errorResponseMessage(res, "Token is missing", 401);
         }
     } catch (error) {

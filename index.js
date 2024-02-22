@@ -14,6 +14,8 @@ const cityRoutes = require('./routes/cityRoutes');
 const friendShipRoutes = require('./routes/friendShipRoutes');
 const imageRoutes = require('./routes/imageRoutes');
 const postRoutes = require('./routes/postRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+const connectionRoutes = require('./routes/connectionRoutes');
 
 
 const app = express();
@@ -36,6 +38,8 @@ app.use('/api/v1', cityRoutes);
 app.use('/api/v1', friendShipRoutes);
 app.use('/api/v1', imageRoutes);
 app.use('/api/v1', postRoutes);
+app.use('/api/v1', chatRoutes);
+app.use('/api/v1', connectionRoutes);
 
 connectToDB();
 const server = http.createServer(app);

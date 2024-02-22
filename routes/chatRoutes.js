@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const { getProfile } = require("../controllers/AdminController");
 const { auth } = require("../middlewares/authMiddleware");
+const { searchUsers } = require("../controllers/ChatController");
 
-router.post('/profile', auth, getProfile);
+router.post('/search-users', auth, searchUsers);
 
 
 module.exports = router;
