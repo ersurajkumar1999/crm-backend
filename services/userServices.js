@@ -18,8 +18,8 @@ const updateUserByID = async (userId, updatedUserData) => {
 const totalUsers = async () => {
     return await userModel.countDocuments({ userType: "User" });
 }
-const getUsers = async (skip, pageSize) => {
-    return await userModel.find({ userType: "User" }).populate('profile').sort({ createdAt: -1 })
+const getUsers = async (skip, pageSize, loggedInUserId) => {
+    return await userModel.find({ userType: "User",_id: { $ne: loggedInUserId }  }).populate('profile').populate('friendRequestsSent').populate('friendRequestsReceived').sort({ createdAt: -1 })
     .skip(skip).limit(pageSize).exec();
 }
 const generateAccountNumber = async () => {

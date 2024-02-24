@@ -2,8 +2,8 @@ const Friendship = require('../models/FriendShip');
 const User = require('../models/User');
 
 const sendFriendRequest = async (req, res) => {
-    const { senderId, receiverId } = req.params;
-
+    const { receiverId } = req.body;
+    const senderId = req.user.id
     try {
         const sender = await User.findById(senderId);
         const receiver = await User.findById(receiverId);
@@ -33,10 +33,13 @@ const sendFriendRequest = async (req, res) => {
 
         await friendshipRequest.save();
 
-        res.json({ message: 'Friend request sent' });
+        const result1 = await User.findByIdAndUpdate(senderId, { $push: { friendRequestsSent: friendshipRequest._id } }, { new: true });
+        const result = await User.findByIdAndUpdate(receiverId, { $push: { friendRequestsReceived: friendshipRequest._id } }, { new: true });
+
+        res.json({ message: 'Friend request sent', data: result, friendshipRequest, result1 });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: 'Internal Server Error', error });
     }
 };
 
