@@ -15,8 +15,6 @@ const searchUsers = async (req, res) => {
     const users = await User.find(search).find({ _id: { $ne: req.rootUserId } });
     return res.status(200).send(users);
 
-
-
     try {
         const user = await findUserById(req.user.id);
         return successResponseMessage(res, "Get Profile", user)
@@ -24,4 +22,24 @@ const searchUsers = async (req, res) => {
         return errorResponseMessage(res, "Something went wrong: " + error.message);
     }
 }
-module.exports = { searchUsers }
+const fetchAllChats = async (req, res) => {
+    try {
+        const chats = await Chat.find({
+            users: { $elemMatch: { $eq: req.rootUserId } },
+        })
+            .populate('users')
+            .populate('latestMessage')
+            .populate('groupAdmin')
+            .sort({ updatedAt: -1 });
+
+        const finalChats = await user.populate(chats, {
+            path: 'latestMessage.sender',
+            select: 'name email profilePic',
+        });
+        res.status(200).json(finalChats);
+    } catch (error) {
+        res.status(500).send(error);
+        console.log(error);
+    }
+};
+module.exports = { searchUsers, fetchAllChats }

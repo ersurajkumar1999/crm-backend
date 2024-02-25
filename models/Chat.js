@@ -3,12 +3,13 @@ const chatSchema = mongoose.Schema(
     {
         photo: {
             type: String,
-            default: 'https://cdn-icons-png.flaticon.com/512/9790/9790561.png',
+            default: null
         },
         chatName: {
             type: String,
+            trim: true,
         },
-        isGroup: {
+        isGroupChat: {
             type: Boolean,
             default: false,
         },
