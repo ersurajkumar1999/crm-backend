@@ -1,6 +1,6 @@
 const Friendship = require('../models/FriendShip');
 const User = require('../models/User');
-
+const Chat = require("../models/Chat");
 const sendFriendRequest = async (req, res) => {
     const { receiverId } = req.body;
     const senderId = req.user.id
@@ -47,7 +47,7 @@ const acceptFriendRequest = async (req, res) => {
     const { friendId } = req.body;
     const userId = req.user.id
     try {
-        
+
         const data = await Friendship.findOneAndUpdate(
             {
                 $or: [
@@ -66,8 +66,13 @@ const acceptFriendRequest = async (req, res) => {
         // Update the friends list for both users
         await User.findByIdAndUpdate(userId, { $push: { friends: friendId } });
         await User.findByIdAndUpdate(friendId, { $push: { friends: userId } });
-
-        res.json({ message: 'Friend request accepted3', data });
+        var chatData = {
+            chatName: "sender",
+            isGroupChat: false,
+            users: [userId, friendId]
+        }
+        const createChat = await Chat.create(chatData);
+        res.json({ message: 'Friend request accepted3', createChat });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
