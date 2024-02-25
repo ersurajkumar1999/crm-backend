@@ -44,25 +44,30 @@ const sendFriendRequest = async (req, res) => {
 };
 
 const acceptFriendRequest = async (req, res) => {
-    const { userId, friendId } = req.params;
-
+    const { friendId } = req.body;
+    const userId = req.user.id
     try {
-        // Update the friendship status to 'accepted'
-        await Friendship.findOneAndUpdate(
+        
+        const data = await Friendship.findOneAndUpdate(
             {
                 $or: [
                     { requester: userId, recipient: friendId, status: 'pending' },
                     { requester: friendId, recipient: userId, status: 'pending' }
                 ]
             },
-            { $set: { status: 'accepted' } }
+            { $set: { status: 'accepted' } },
+            { new: true }
         );
+
+        if (!data) {
+            return res.status(404).json({ message: 'Friendship request not found' });
+        }
 
         // Update the friends list for both users
         await User.findByIdAndUpdate(userId, { $push: { friends: friendId } });
         await User.findByIdAndUpdate(friendId, { $push: { friends: userId } });
 
-        res.json({ message: 'Friend request accepted' });
+        res.json({ message: 'Friend request accepted3', data });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
